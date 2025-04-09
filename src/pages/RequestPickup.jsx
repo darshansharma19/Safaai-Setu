@@ -1,15 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function RequestPickup() {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
     phone: "",
+    email: "",
     wasteType: "",
+    pickupTime: "",
+    notes: "",
+    agree: false,
   });
 
-  const [showTimer, setShowTimer] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
+  const navigate = useNavigate();
 
   const wasteOptions = [
     "Dry Waste",
@@ -21,133 +25,181 @@ function RequestPickup() {
   ];
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormData({ name: "", address: "", phone: "", wasteType: "" });
-    setShowTimer(true);
-    setTimeLeft(600); // Reset to 10 minutes
-  };
-
-  // Countdown logic
-  useEffect(() => {
-    let timer;
-    if (showTimer && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
+    if (!formData.agree) {
+      alert("Please accept the terms and conditions.");
+      return;
     }
 
-    if (timeLeft === 0) {
-      setShowTimer(false);
-    }
+    // Clear form
+    setFormData({
+      name: "",
+      address: "",
+      phone: "",
+      email: "",
+      wasteType: "",
+      pickupTime: "",
+      notes: "",
+      agree: false,
+    });
 
-    return () => clearInterval(timer);
-  }, [showTimer, timeLeft]);
-
-  const formatTime = (seconds) => {
-    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const sec = String(seconds % 60).padStart(2, "0");
-    return `${min}:${sec}`;
+    navigate("/pickup-status");
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 text-gray-800">
-      <h1 className="text-3xl font-bold mb-8 text-green-700 text-center">
+    <div className="max-w-6xl mx-auto p-6 lg:p-12 text-gray-800">
+      <h1 className="text-4xl font-bold mb-2 text-green-700 text-center">
         Waste Pickup Request 🧹
       </h1>
+      <p className="text-center text-gray-600 mb-10 text-sm">
+        Schedule your waste pickup in just a few clicks.
+      </p>
 
-      {showTimer && (
-        <div className="mb-8 bg-green-100 border border-green-300 p-6 rounded-lg shadow text-center">
-          <h2 className="text-xl font-semibold text-green-800 mb-2">
-            ✅ Your request has been submitted!
-          </h2>
-          <p className="text-green-700">
-            A Zonal Sevak will be assigned to you in:
-          </p>
-          <div className="text-4xl font-bold text-green-900 mt-2 tracking-wider">
-            {formatTime(timeLeft)}
-          </div>
-        </div>
-      )}
-
-      <div className="grid md:grid-cols-2 gap-8 items-center">
-        {/* Left Side Image */}
-        <div className="hidden md:block">
+      <div className="flex flex-col lg:flex-row bg-white rounded-xl shadow-xl overflow-hidden">
+        {/* Image */}
+        <div className="lg:w-1/2 hidden lg:block">
           <img
             src="/img2.jpeg"
-            alt="Waste Collection"
-            className="rounded-lg shadow-lg w-full h-auto object-cover"
+            alt="Pickup"
+            className="w-full h-full object-cover"
           />
         </div>
 
-        {/* Right Side Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-green-50 p-6 rounded-lg shadow-md space-y-4"
-        >
-          <div>
-            <label className="block mb-1 font-medium">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border border-green-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+        {/* Form */}
+        <div className="w-full lg:w-1/2 p-6 lg:p-10 bg-green-50">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. Darshan Sharma"
+                className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Address</label>
-            <textarea
-              name="address"
-              required
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full border border-green-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Phone Number</label>
-            <input
-              type="tel"
-              name="phone"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border border-green-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Address
+              </label>
+              <textarea
+                name="address"
+                required
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Your pickup address"
+                className="w-full border border-green-300 px-4 py-2 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Type of Waste</label>
-            <select
-              name="wasteType"
-              required
-              value={formData.wasteType}
-              onChange={handleChange}
-              className="w-full border border-green-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                required
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="10-digit number"
+                className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Type of Waste
+              </label>
+              <select
+                name="wasteType"
+                required
+                value={formData.wasteType}
+                onChange={handleChange}
+                className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">-- Select Waste Type --</option>
+                {wasteOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Preferred Pickup Time
+              </label>
+              <input
+                type="time"
+                name="pickupTime"
+                value={formData.pickupTime}
+                onChange={handleChange}
+                className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Additional Notes (optional)
+              </label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                placeholder="Landmark, building access info, etc."
+                className="w-full border border-green-300 px-4 py-2 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="agree"
+                checked={formData.agree}
+                onChange={handleChange}
+                className="accent-green-600"
+              />
+              <label className="text-sm text-gray-700">
+                I agree to the{" "}
+                <span className="text-green-600 font-medium cursor-pointer">
+                  Terms & Conditions
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-full font-semibold transition-all duration-300"
             >
-              <option value="">-- Select Waste Type --</option>
-              {wasteOptions.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-full font-semibold transition-all"
-          >
-            Submit Request
-          </button>
-        </form>
+              🚛 Submit Pickup Request
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

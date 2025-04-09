@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import "leaflet/dist/leaflet.css";
 import Home from "./pages/Home";
 import RequestPickup from "./pages/RequestPickup";
 import WasteInfo from "./pages/WasteInfo";
@@ -9,6 +10,7 @@ import PickupRequests from "./admin/PickupRequests";
 import AssignSevak from "./admin/AssignSevak";
 import WasteSummary from "./admin/WasteSummary";
 import Users from "./admin/Users";
+import PickupStatus from "./pages/PickupStatus"; // ✅ Already imported
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,10 +49,8 @@ function App() {
                 strokeLinejoin="round"
               >
                 {menuOpen ? (
-                  // Close Icon (X)
                   <path d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  // Hamburger Icon (3 lines)
                   <path d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
@@ -59,29 +59,22 @@ function App() {
             {/* Desktop Menu */}
             <ul className="hidden md:flex gap-6">
               <li>
-                <Link to="/" className="hover:underline">
-                  Home
-                </Link>
+                <Link to="/" className="hover:underline">Home</Link>
               </li>
               <li>
-                <Link to="/request" className="hover:underline">
-                  Request Pickup
-                </Link>
+                <Link to="/request" className="hover:underline">Request Pickup</Link>
               </li>
               <li>
-                <Link to="/waste-info" className="hover:underline">
-                  Waste Info
-                </Link>
+                <Link to="/waste-info" className="hover:underline">Waste Info</Link>
               </li>
               <li>
-                <Link to="/admin" className="hover:underline">
-                  Admin
-                </Link>
+                <Link to="/pickup-status" className="hover:underline">Pickup Status</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:underline">
-                  About
-                </Link>
+                <Link to="/admin" className="hover:underline">Admin</Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:underline">About</Link>
               </li>
             </ul>
           </div>
@@ -89,31 +82,12 @@ function App() {
           {/* Mobile Menu */}
           {menuOpen && (
             <ul className="md:hidden mt-4 space-y-2">
-              <li>
-                <Link to="/" onClick={toggleMenu}>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/request" onClick={toggleMenu}>
-                  Request Pickup
-                </Link>
-              </li>
-              <li>
-                <Link to="/waste-info" onClick={toggleMenu}>
-                  Waste Info
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin" onClick={toggleMenu}>
-                  Admin
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" onClick={toggleMenu}>
-                  About
-                </Link>
-              </li>
+              <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
+              <li><Link to="/request" onClick={toggleMenu}>Request Pickup</Link></li>
+              <li><Link to="/waste-info" onClick={toggleMenu}>Waste Info</Link></li>
+              <li><Link to="/pickup-status" onClick={toggleMenu}>Pickup Status</Link></li>
+              <li><Link to="/admin" onClick={toggleMenu}>Admin</Link></li>
+              <li><Link to="/about" onClick={toggleMenu}>About</Link></li>
             </ul>
           )}
         </nav>
@@ -123,6 +97,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/request" element={<RequestPickup />} />
             <Route path="/waste-info" element={<WasteInfo />} />
+            <Route path="/pickup-status" element={<PickupStatus />} /> {/* ✅ Corrected */}
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Dashboard />} />
             <Route path="/admin/requests" element={<PickupRequests />} />

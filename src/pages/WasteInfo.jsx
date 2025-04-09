@@ -44,60 +44,69 @@ const payWaste = [
 
 function WasteInfo() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 text-gray-800">
-      <h1 className="text-3xl font-bold text-center text-green-700 mb-10">
-        Know Your Waste ♻️
+    <div className="max-w-7xl mx-auto px-4 py-12 text-gray-800">
+      <h1 className="text-4xl font-extrabold text-center text-green-700 mb-12 tracking-tight">
+        ♻️ Know Your Waste
       </h1>
 
-      {/* Earn from Waste */}
-      <section className="mb-14">
-        <h2 className="text-2xl font-bold text-green-800 mb-6">
+      {/* Earn from Waste Section */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center gap-2">
           💰 Earn from Waste
         </h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {earnWaste.map((item, idx) => (
             <div
               key={idx}
-              className={`${item.bg} p-6 rounded-xl shadow-md hover:shadow-lg transition-all`}
+              className={`group ${item.bg} p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1`}
             >
-              <div className="text-4xl mb-3">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-green-900 mb-1">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <h3 className="text-xl font-semibold text-green-900 mb-2">
                 {item.type}
               </h3>
-              <p className="text-gray-700 text-sm">{item.description}</p>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Pay for Waste */}
+      {/* Pay for Waste Section */}
       <section>
-        <h2 className="text-2xl font-bold text-red-700 mb-6">
+        <h2 className="text-2xl font-bold text-red-700 mb-6 flex items-center gap-2">
           💸 Pay for Waste
         </h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {payWaste.map((item, idx) => (
             <div
               key={idx}
-              className={`${item.bg} p-6 rounded-xl shadow-md hover:shadow-lg transition-all`}
+              className={`group ${item.bg} p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1`}
             >
-              <div className="text-4xl mb-3">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-red-900 mb-1">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <h3 className="text-xl font-semibold text-red-900 mb-2">
                 {item.type}
               </h3>
-              <p className="text-gray-700 text-sm">{item.description}</p>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Footer Info */}
-      <div className="mt-14 bg-green-50 p-6 rounded-lg shadow-inner text-center">
-        <h2 className="text-2xl font-bold text-green-800 mb-2">
-          Why Waste Segregation Matters?
+      {/* Footer Section */}
+      <div className="mt-20 bg-green-50 p-8 rounded-2xl shadow-inner text-center">
+        <h2 className="text-2xl font-bold text-green-800 mb-4">
+          🌿 Why Waste Segregation Matters?
         </h2>
-        <p className="text-gray-700 max-w-2xl mx-auto">
-          Proper segregation ensures safe disposal and supports recycling efforts. Be a part of a greener tomorrow 🌍🌱.
+        <p className="text-gray-700 text-base leading-relaxed max-w-3xl mx-auto">
+          Proper segregation ensures safe disposal and supports recycling efforts.
+          Contribute to a cleaner, safer, and more sustainable environment. Every action counts toward a greener tomorrow 🌍🌱.
         </p>
       </div>
     </div>
