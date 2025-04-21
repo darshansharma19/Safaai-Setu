@@ -2,41 +2,53 @@ import React from "react";
 
 const earnWaste = [
   {
-    type: "Dry Waste",
-    description: "Includes paper, cardboard, metal, and glass. Recyclable and can earn credits or cash.",
-    icon: "📦",
+    type: "Paper Waste",
+    description: "Newspapers, notebooks, and cartons. Can be sold at approx ₹10–₹15/kg.",
+    icon: "📰",
     bg: "bg-yellow-100",
   },
   {
+    type: "Metal Waste (Iron & Steel)",
+    description: "Includes rods, utensils, and scrap metal. Rates vary, usually ₹25–₹40/kg.",
+    icon: "🔩",
+    bg: "bg-gray-200",
+  },
+  {
     type: "Plastic Waste",
-    description: "Bottles, wrappers, containers. Sellable if segregated properly.",
+    description: "Bottles, wrappers, containers. Clean & sorted plastic sells for ₹5–₹15/kg.",
     icon: "🧴",
     bg: "bg-blue-100",
   },
   {
     type: "E-Waste",
-    description: "Phones, wires, gadgets. Recyclers pay for proper disposal.",
+    description: "Mobiles, chargers, laptops. Recyclers offer ₹10–₹100+ depending on type.",
     icon: "💻",
     bg: "bg-gray-100",
+  },
+  {
+    type: "Glass Waste",
+    description: "Bottles, jars, and broken glass. Recyclable at around ₹2–₹5/kg.",
+    icon: "🍾",
+    bg: "bg-green-100",
   },
 ];
 
 const payWaste = [
   {
     type: "Wet Waste",
-    description: "Food and garden waste. Needs composting or municipal processing.",
+    description: "Food scraps, vegetable peels, and garden waste. Requires composting.",
     icon: "🍎",
     bg: "bg-green-100",
   },
   {
     type: "Hazardous Waste",
-    description: "Chemicals, paint, and harmful items. Requires expert handling.",
+    description: "Batteries, paint cans, chemical containers. Needs expert disposal services.",
     icon: "☠️",
     bg: "bg-red-100",
   },
   {
     type: "Bio-medical Waste",
-    description: "From hospitals like syringes and bandages. Highly sensitive disposal.",
+    description: "Syringes, masks, bandages. High-risk waste handled only by professionals.",
     icon: "🩺",
     bg: "bg-pink-100",
   },
@@ -105,8 +117,9 @@ function WasteInfo() {
           🌿 Why Waste Segregation Matters?
         </h2>
         <p className="text-gray-700 text-base leading-relaxed max-w-3xl mx-auto">
-          Proper segregation ensures safe disposal and supports recycling efforts.
-          Contribute to a cleaner, safer, and more sustainable environment. Every action counts toward a greener tomorrow 🌍🌱.
+          Waste segregation is essential for recycling, earning back value, and
+          ensuring hazardous waste is safely handled. Be a part of a cleaner,
+          greener future—segregate wisely and help build a sustainable society.
         </p>
       </div>
     </div>

@@ -18,6 +18,7 @@ function Home() {
               Request Pickup Now
             </button>
           </Link>
+          
         </div>
       </section>
 
@@ -47,7 +48,7 @@ function Home() {
             <ul className="space-y-4 text-green-900 font-semibold text-base">
               <li className="flex items-start gap-3 hover:translate-x-2 transition-all">
                 <span className="text-2xl">⏱️</span>
-                <span>Pickup in just <span className="text-green-700 font-bold">10 minutes</span> after request – lightning fast!</span>
+                <span>Pickup in just <span className="text-green-700 font-bold">10 minutes @ 49 Rs</span> after request – lightning fast!</span>
               </li>
               <li className="flex items-start gap-3 hover:translate-x-2 transition-all">
                 <span className="text-2xl">♻️</span>

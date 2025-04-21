@@ -1,35 +1,56 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function RequestPickup() {
+function RequestPickup({ user }) {
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    phone: "",
-    email: "",
+    addressZone: "",
+    addressWard: "",
+    addressArea: "",
     wasteType: "",
-    pickupTime: "",
+    pickupSlot: "",
+    weight: "",
+    estimatedCost: 49,
     notes: "",
     agree: false,
+    image: null,
   });
 
-  const [status, setStatus] = useState("idle"); // idle | finding | assigned
+  const [status, setStatus] = useState("idle");
   const [assignedSevak, setAssignedSevak] = useState(null);
-
   const navigate = useNavigate();
 
-  const wasteOptions = [
-    "Dry Waste",
-    "Wet Waste",
-    "Plastic Waste",
-    "E-Waste",
-    "Hazardous Waste",
-    "Bio-medical Waste",
+  const wasteOptions = ["Dry", "Wet", "Mixed"];
+  const pickupSlots = [
+    "6 AM - 9 AM",
+    "9 AM - 12 PM",
+    "12 PM - 3 PM",
+    "3 PM - 6 PM",
+    "6 PM - 9 PM",
   ];
+  const zones = ["Zone 1", "Zone 2", "Zone 3", "Zone 4"];
+  const wards = ["Ward 1", "Ward 2", "Ward 3", "Ward 4"];
+  const areas = ["Rajwada", "Vijay Nagar", "Palasia", "Bhavarkuan"];
+
+  const calculateCost = (weight) => {
+    const parsed = parseFloat(weight);
+    if (isNaN(parsed)) return 49;
+    const cost = Math.max(49, Math.min(5000, parsed * 10));
+    return cost;
+  };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+    const { name, value, type, checked, files } = e.target;
+    if (type === "file") {
+      setFormData({ ...formData, image: files[0] });
+    } else if (name === "weight") {
+      const newCost = calculateCost(value);
+      setFormData({ ...formData, weight: value, estimatedCost: newCost });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -39,7 +60,6 @@ function RequestPickup() {
       return;
     }
 
-    // Start finding sevak
     setStatus("finding");
 
     setTimeout(() => {
@@ -48,27 +68,26 @@ function RequestPickup() {
       setAssignedSevak(randomSevak);
       setStatus("assigned");
 
-      // Simulate small delay before redirecting
       setTimeout(() => {
-        // Clear form
         setFormData({
-          name: "",
-          address: "",
-          phone: "",
-          email: "",
+          addressZone: "",
+          addressWard: "",
+          addressArea: "",
           wasteType: "",
-          pickupTime: "",
+          pickupSlot: "",
+          weight: "",
+          estimatedCost: 49,
           notes: "",
           agree: false,
+          image: null,
         });
-
         navigate("/pickup-status");
       }, 5000);
-    }, 10000); // simulate 10 seconds of searching
+    }, 6000);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 lg:p-12 text-gray-800">
+    <div className="max-w-5xl mx-auto p-6 lg:p-12 text-gray-800">
       <h1 className="text-4xl font-bold mb-2 text-green-700 text-center">
         Waste Pickup Request 🧹
       </h1>
@@ -84,22 +103,26 @@ function RequestPickup() {
               🚛
             </div>
           </div>
-          <p className="text-green-700 font-semibold">Finding nearest Zonal Sevak...</p>
+          <p className="text-green-700 font-semibold">
+            Finding nearest Zonal Sevak...
+          </p>
         </div>
       )}
 
       {status === "assigned" && assignedSevak && (
         <div className="text-center mb-10">
           <p className="text-lg text-green-700 font-semibold">
-            Zonal Sevak <span className="font-bold">{assignedSevak}</span> has been assigned and is on the way! 🛺
+            Zonal Sevak <span className="font-bold">{assignedSevak}</span> has
+            been assigned and is on the way! 🛺
           </p>
-          <p className="text-sm text-gray-600">Redirecting to pickup status...</p>
+          <p className="text-sm text-gray-600">
+            Redirecting to pickup status...
+          </p>
         </div>
       )}
 
       {status === "idle" && (
         <div className="flex flex-col lg:flex-row bg-white rounded-xl shadow-xl overflow-hidden">
-          {/* Image */}
           <div className="lg:w-1/2 hidden lg:block">
             <img
               src="/img2.jpeg"
@@ -108,100 +131,127 @@ function RequestPickup() {
             />
           </div>
 
-          {/* Form */}
           <div className="w-full lg:w-1/2 p-6 lg:p-10 bg-green-50">
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* All your form inputs here, unchanged... */}
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="e.g. Darshan Sharma"
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
+              {/* Zone, Ward, Area */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { name: "Zone", field: "addressZone", options: zones },
+                  { name: "Ward", field: "addressWard", options: wards },
+                  { name: "Area", field: "addressArea", options: areas },
+                ].map(({ name, field, options }) => (
+                  <div key={field}>
+                    <label className="block text-sm font-semibold mb-1">
+                      {name}
+                    </label>
+                    <select
+                      name={field}
+                      required
+                      value={formData[field]}
+                      onChange={handleChange}
+                      className="w-full border border-green-300 px-3 py-2 rounded-lg"
+                    >
+                      <option value="">Select {name}</option>
+                      {options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Address
-                </label>
-                <textarea
-                  name="address"
-                  required
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Your pickup address"
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="10-digit number"
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
+              {/* Waste Type */}
               <div>
                 <label className="block text-sm font-semibold mb-1">
                   Type of Waste
                 </label>
-                <select
-                  name="wasteType"
-                  required
-                  value={formData.wasteType}
-                  onChange={handleChange}
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">-- Select Waste Type --</option>
+                <div className="flex gap-3 flex-wrap">
                   {wasteOptions.map((type) => (
-                    <option key={type} value={type}>
+                    <div
+                      key={type}
+                      onClick={() =>
+                        setFormData({ ...formData, wasteType: type })
+                      }
+                      className={`cursor-pointer px-4 py-2 rounded-lg border-2 ${
+                        formData.wasteType === type
+                          ? "border-green-600 bg-green-100 font-semibold"
+                          : "border-green-300 bg-white"
+                      }`}
+                    >
                       {type}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time Slot */}
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Pickup Time Slot
+                </label>
+                <select
+                  name="pickupSlot"
+                  required
+                  value={formData.pickupSlot}
+                  onChange={handleChange}
+                  className="w-full border border-green-300 px-4 py-2 rounded-lg"
+                >
+                  <option value="">-- Select Slot --</option>
+                  {pickupSlots.map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
                     </option>
                   ))}
                 </select>
               </div>
 
+              {/* Waste Weight & Estimated Cost */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    Estimated Weight (kg)
+                  </label>
+                  <input
+                    type="number"
+                    name="weight"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    min={0}
+                    className="w-full border border-green-300 px-3 py-2 rounded-lg"
+                    placeholder="e.g. 10"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    Estimated Cost (₹)
+                  </label>
+                  <input
+                    type="text"
+                    value={`₹${formData.estimatedCost}`}
+                    readOnly
+                    className="w-full border border-green-300 px-3 py-2 rounded-lg bg-gray-100"
+                  />
+                </div>
+              </div>
+
+              {/* Image Upload */}
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Preferred Pickup Time
+                  Upload Waste Photo
                 </label>
                 <input
-                  type="time"
-                  name="pickupTime"
-                  value={formData.pickupTime}
+                  type="file"
+                  name="image"
+                  accept="image/*"
                   onChange={handleChange}
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-green-300 px-3 py-2 rounded-lg"
                 />
               </div>
 
+              {/* Notes */}
               <div>
                 <label className="block text-sm font-semibold mb-1">
                   Additional Notes (optional)
@@ -211,10 +261,11 @@ function RequestPickup() {
                   value={formData.notes}
                   onChange={handleChange}
                   placeholder="Landmark, building access info, etc."
-                  className="w-full border border-green-300 px-4 py-2 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-green-300 px-4 py-2 rounded-lg resize-none"
                 />
               </div>
 
+              {/* Terms */}
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -231,6 +282,7 @@ function RequestPickup() {
                 </label>
               </div>
 
+              {/* Submit */}
               <button
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-full font-semibold transition-all duration-300"
